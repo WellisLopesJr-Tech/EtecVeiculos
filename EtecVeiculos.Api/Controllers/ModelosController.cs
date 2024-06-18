@@ -8,46 +8,46 @@ namespace EtecVeiculos.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class TipoVeiculosController : ControllerBase
+public class ModelosController : ControllerBase
 {
     private readonly AppDbContext _context;
 
-    public TipoVeiculosController(AppDbContext context)
+    public ModelosController(AppDbContext context)
     {
         _context = context;
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<TipoVeiculo>>> Get()
+    public async Task<ActionResult<List<Modelo>>> Get()
     {
-        var tipos = await _context.TipoVeiculos.ToListAsync();
+        var tipos = await _context.Modelo.ToListAsync();
         return Ok(tipos);
     }
 
     [HttpGet("{id}")]
     [ProducesResponseType(200)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<TipoVeiculo>> Get(int id)
+    public async Task<ActionResult<Modelo>> Get(int id)
     {
-        var tipo = await _context.TipoVeiculos.FindAsync(id);
+        var tipo = await _context.Modelo.FindAsync(id);
         if (tipo == null)
-            return NotFound("Tipo de veículo não localizado!");
+            return NotFound("Modelo não localizado!");
         return Ok(tipo);
     }
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> Create(TipoVeiculoVM tipoVeiculoVM)
+    public async Task<ActionResult> Create(ModeloVM modeloVM)
     {
          if (ModelState.IsValid)
          {            
-            TipoVeiculo tipoVeiculo = new(){
-                Name = tipoVeiculoVM.Name
+           Modelo modelo = new(){
+                Nome = modeloVM.Nome
             };
-            await _context.AddAsync(tipoVeiculo);
+            await _context.AddAsync(modelo);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(Get), new {id = tipoVeiculo.Id});
+            return CreatedAtAction(nameof(Get), new {id = modelo.Id});
          }
          return BadRequest("Verifique os dados informados!");
     }
@@ -56,18 +56,18 @@ public class TipoVeiculosController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> Edit(int id, TipoVeiculo tipoVeiculo)
+    public async Task<ActionResult> Edit(int id, Modelo modelo)
     {
         if (ModelState.IsValid)
         {
             try
             {
-                if(!_context.TipoVeiculos.Any(q => q.Id == id))
-                    return NotFound("Tipo de veículo não encontrado!");
-                if (id != tipoVeiculo.Id)
+                if(!_context.Modelo.Any(q => q.Id == id))
+                    return NotFound("Modelo não encontrado!");
+                if (id != modelo.Id)
                     return BadRequest("Verifique os dados informados");
 
-                _context.Entry(tipoVeiculo).State = EntityState.Modified;
+                _context.Entry(modelo).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
 
                 return NoContent();
@@ -87,12 +87,12 @@ public class TipoVeiculosController : ControllerBase
     {
         try
         {
-            var tipoVeiculo = await _context.TipoVeiculos
+            var modelo = await _context.Modelo
                 .FirstOrDefaultAsync(q => q.Id == id);
-            if (tipoVeiculo == null)
-                return NotFound("Tipo de veículo não encontrado");
+            if (modelo == null)
+                return NotFound("Modelo não encontrado");
 
-                _context.Remove(tipoVeiculo);
+                _context.Remove(modelo);
                 await _context.SaveChangesAsync();
             
                 return NoContent();

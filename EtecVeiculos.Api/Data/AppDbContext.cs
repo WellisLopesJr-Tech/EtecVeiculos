@@ -10,6 +10,8 @@ public class AppDbContext : DbContext
     }
 
     public DbSet<TipoVeiculo> TipoVeiculos { get; set; }
+    public DbSet<Marca> Marca { get; set; }
+    public DbSet<Modelo> Modelo { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
